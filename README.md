@@ -26,3 +26,14 @@ A API possui duas principais funcionalidades:
      - **Gêneros**
      - **Imagem de capa**
      - **Episódios de streaming disponíveis**
+
+## Limite de taxa
+
+Esta API proxia a [AniList](https://anilist.co), que e publica e tem limite de
+taxa. Cada chamada do cliente vira uma consulta GraphQL upstream. Se for
+republicar, respeite os [Termos de Uso](https://anilist.co/terms) da AniList e
+nao incremente o volume.
+
+## Licenca
+
+MIT - veja [LICENSE](LICENSE).
