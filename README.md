@@ -1,39 +1,77 @@
-# API de Animes 🌟
+# API de animes
 
-Esta é uma **API** desenvolvida com **Node.js** e **Express** que fornece informações sobre animes populares utilizando dados da **AniList**. A API permite acessar uma lista dos principais animes e detalhes completos sobre cada um, incluindo títulos, descrições, episódios, gêneros e locais de streaming.
+API REST que serve os animes mais populares via a API GraphQL pública do
+[AniList](https://anilist.co). Dois endpoints, sem banco: cada requisição é uma
+consulta ao AniList.
 
-## Funcionalidades 🚀
+![Node](https://img.shields.io/badge/Node-339933?style=flat-square&logo=node.js&logoColor=white)
+![Express](https://img.shields.io/badge/Express-000000?style=flat-square&logo=express&logoColor=white)
+![License](https://img.shields.io/badge/License-MIT-F05138?style=flat-square)
 
-A API possui duas principais funcionalidades:
+Demo: [loyfus-anime-backend.vercel.app](https://loyfus-anime-backend.vercel.app)
 
-### 1. **Obter os animes mais populares** 🎬
-   - **Endpoint**: `/`
-   - **Método**: `GET`
-   - **Parâmetros**:
-     - `page`: Número da página de resultados (padrão: **1**)
-     - `perPage`: Quantidade de animes por página (padrão: **20**)
-   - **Descrição**: Retorna uma lista dos animes mais populares com informações como **id**, **título** e **imagem de capa**.
+## O problema
 
-### 2. **Obter detalhes de um anime específico** 📖
-   - **Endpoint**: `/:id`
-   - **Método**: `GET`
-   - **Parâmetro**:
-     - `id`: **ID** do anime (obtido através da resposta do endpoint anterior)
-   - **Descrição**: Retorna detalhes completos sobre o anime, incluindo:
-     - **Título** (romaji, inglês e nativo)
-     - **Descrição limpa**
-     - **Número de episódios**
-     - **Gêneros**
-     - **Imagem de capa**
-     - **Episódios de streaming disponíveis**
+A GraphQL do AniList responde bem, mas força o cliente a montar query e lidar
+com um envelope aninhado. Quem só quer uma lista de animes não deveria saber
+que existe GraphQL.
+
+O front do [LoyfusAnime](https://github.com/loyfus/animeFrontEnd) consome esta
+API — ele nunca fala com o AniList direto.
+
+## Decisões
+
+**Limpar o HTML no servidor.** A descrição do AniList vem com `<br>` e `<p>`
+embaralhados. O `cleanDescription` converte quebra de linha, remove as demais
+tags e normaliza `` — o front recebe texto puro e não precisa montar um
+parser de HTML para desenhar uma linha.
+
+**Delegar a ordenação.** `POPULARITY_DESC` é pedido ao AniList, não aplicado
+aqui. Reimplementar o ranking exigiria baixar o catálogo inteiro para discarding
+os 99 que não entram.
+
+**Erro vira resposta, não crash.** Falha do AniList devolve `500` com mensagem
+em vez de derrubar o processo em serverless, onde cada requisição já é um
+invólucro isolado.
+
+## Rodar
+
+```bash
+npm install
+npm start
+```
+
+## API
+
+### `GET /`
+
+Lista os animes mais populares.
+
+| Parâmetro | Padrão | Para quê |
+| --- | --- | --- |
+| `page` | `1` | Número da página |
+| `perPage` | `40` | Itens por página |
+
+### `GET /:id`
+
+Detalhe de um anime: título em romaji, inglês e nativo, descrição limpa,
+número de episódios, gêneros, capa e onde assistir.
 
 ## Limite de taxa
 
-Esta API proxia a [AniList](https://anilist.co), que e publica e tem limite de
-taxa. Cada chamada do cliente vira uma consulta GraphQL upstream. Se for
-republicar, respeite os [Termos de Uso](https://anilist.co/terms) da AniList e
-nao incremente o volume.
+Cada chamada aqui vira uma requisição ao AniList, que é pública e tem limite de
+taxa. Para uso próprio isso não é problema; para republicar, respeite os
+[Termos de Uso](https://anilist.co/terms) e não incremente o volume.
 
-## Licenca
+## Stack
 
-MIT - veja [LICENSE](LICENSE).
+| | |
+| --- | --- |
+| Runtime | Node · CommonJS |
+| Framework | Express |
+| Fonte | AniList GraphQL |
+| Deploy | Vercel (serverless) |
+
+## Licença
+
+MIT — [LICENSE](LICENSE).
