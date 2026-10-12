@@ -57,6 +57,17 @@ Lista os animes mais populares.
 Detalhe de um anime: título em romaji, inglês e nativo, descrição limpa,
 número de episódios, gêneros, capa e onde assistir.
 
+## Arquitetura
+
+```
+index.js              monta o app, sobe o servidor
+routes/topAnimes.js   as duas rotas e a limpeza de HTML
+vercel.json           deploy serverless
+```
+
+Um arquivo de rotas só, porque são duas. A limpeza de description fica ao lado
+das rotas, e não em um `utils/`: é usada apenas aqui.
+
 ## Limite de taxa
 
 Cada chamada aqui vira uma requisição ao AniList, que é pública e tem limite de
