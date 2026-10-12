@@ -10,20 +10,24 @@ consulta ao AniList.
 
 Demo: [loyfus-anime-backend.vercel.app](https://loyfus-anime-backend.vercel.app)
 
+> **Contexto.** Projeto de estudo — não está em produção. É uma proxy fina sobre a GraphQL
+> pública do AniList, com a descrição limpa no servidor.
+
 ## O problema
 
 A GraphQL do AniList responde bem, mas força o cliente a montar query e lidar
 com um envelope aninhado. Quem só quer uma lista de animes não deveria saber
 que existe GraphQL.
 
-O front do [LoyfusAnime](https://github.com/loyfus/animeFrontEnd) consome esta
-API — ele nunca fala com o AniList direto.
+O front do [anime-web](https://github.com/loyfus/anime-web) consome esta API —
+ele nunca fala com o AniList direto.
 
 ## Decisões
 
 **Limpar o HTML no servidor.** A descrição do AniList vem com `<br>` e `<p>`
 embaralhados. O `cleanDescription` converte quebra de linha, remove as demais
-tags e normaliza `` — o front recebe texto puro e não precisa montar um
+tags e normaliza `
+` — o front recebe texto puro e não precisa montar um
 parser de HTML para desenhar uma linha.
 
 **Delegar a ordenação.** `POPULARITY_DESC` é pedido ao AniList, não aplicado

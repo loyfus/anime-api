@@ -9,5 +9,6 @@
     "express": "^4.21.1",
     "sanitize-html": "^2.13.1"
   },
-  "license": "MIT"
+  "license": "MIT",
+  "name": "anime-api"
 }
